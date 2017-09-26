@@ -4,9 +4,9 @@ Contributors: ModernTribe, aguseo, barry.hughes, bordoni, borkweb, brianjessee, 
 Donate link: http://m.tri.be/4o
 Tags: developer-tools, custom post, filter, column, metabox, taxonomy, wp-admin, admin, Post, post type, plugin, advanced, tribe
 Requires at least: 3.2
-Tested up to: 4.7
+Tested up to: 4.8.2
 License: GPL v2
-Stable tag: 4.4
+Stable tag: 4.4.1
 
 Turbo charge your posts admin for any custom post type with sortable filters and columns, and auto-registration of metaboxes.
 
@@ -120,6 +120,8 @@ Our Premium Plugins:
 2. Automatically registered metaboxes for data entry
 
 == Changelog ==
+
+= [4.4.1] TBD =
 
 = [4.4] 2017-01-09 =
 
