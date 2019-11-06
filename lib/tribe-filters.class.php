@@ -1,6 +1,5 @@
 <?php
 
-
 if ( ! class_exists( 'Tribe_Filters' ) ) {
 	/**
 	 * A class for providing WordPress filters in a manage "posts" view
@@ -226,7 +225,7 @@ if ( ! class_exists( 'Tribe_Filters' ) ) {
 			add_filter( 'posts_request', array( $this, 'help_decimal_cast' ), 10, 1 );
 		}
 
-		public function maybe_cast_for_ordering( $wp_query, $active ) {
+		public function maybe_cast_for_ordering( WP_Query $wp_query, $active ) {
 			// Only if it's sorting on meta
 			if ( 'meta_value' !== $wp_query->get( 'orderby' ) ) {
 				return;
@@ -249,7 +248,7 @@ if ( ! class_exists( 'Tribe_Filters' ) ) {
 			return preg_replace( '/AS DECIMAL\)/', 'AS DECIMAL(6,2))', $query );
 		}
 
-		public function cast_orderby( $orderby, $wp_query ) {
+		public function cast_orderby( $orderby, WP_Query $wp_query ) {
 			// Run once
 			remove_filter( 'posts_orderby', array( $this, 'cast_orderby' ), 10, 2 );
 			list( $by, $dir ) = explode( ' ', trim( $orderby ) );
@@ -273,17 +272,17 @@ if ( ! class_exists( 'Tribe_Filters' ) ) {
 			add_action( 'parse_query', array( $this, 'parse_query' ) );
 		}
 
-		public function parse_query( $wp_query ) {
+		public function parse_query( WP_Query $wp_query ) {
 			// Run once
 			// If we just remove it though, without leaving something in its place
 			// the next action that's supposed to run on parse query might be skipped.
 			add_action( 'parse_query', '__return_true' );
-			remove_action( 'parse_query', array( $this, 'parse_query' ) );
+			remove_action( 'parse_query', [ $this, 'parse_query' ] );
 
-			do_action_ref_array( 'tribe_before_parse_query', array( $wp_query, $this->active ) );
+			do_action_ref_array( 'tribe_before_parse_query', [ $wp_query, $this->active ] );
 
-			$tax_query  = array();
-			$meta_query = array();
+			$tax_query  = [];
+			$meta_query = [];
 
 			foreach ( $this->active as $k => $v ) {
 				if ( ! isset( $this->filters[ $k ] ) ) {
@@ -298,18 +297,18 @@ if ( ! class_exists( 'Tribe_Filters' ) ) {
 				}
 			}
 			$old_tax_query = $wp_query->get( 'tax_query' );
-			$old_tax_query = ( empty( $old_tax_query ) ) ? array() : $old_tax_query;
+			$old_tax_query = ( empty( $old_tax_query ) ) ? [] : $old_tax_query;
 			$tax_query     = array_merge( $old_tax_query, $tax_query );
 			$wp_query->set( 'tax_query', $tax_query );
 
 			$old_meta_query = $wp_query->get( 'meta_query' );
-			$old_meta_query = ( empty( $old_meta_query ) ) ? array() : $old_meta_query;
+			$old_meta_query = ( empty( $old_meta_query ) ) ? [] : $old_meta_query;
 			$meta_query     = array_merge( $old_meta_query, $meta_query );
 			$wp_query->set( 'meta_query', $meta_query );
 
 			$this->maybe_set_ordering( $wp_query );
 
-			do_action_ref_array( 'tribe_after_parse_query', array( $wp_query, $this->active ) );
+			do_action_ref_array( 'tribe_after_parse_query', [ $wp_query, $this->active ] );
 		}
 
 		public function debug() {
@@ -449,7 +448,7 @@ if ( ! class_exists( 'Tribe_Filters' ) ) {
 		}
 
 
-		// UTLITIES AND INTERNAL METHODS
+		// UTILITIES AND INTERNAL METHODS
 
 		protected function last_query() {
 			return get_user_meta( get_current_user_id(), 'last_used_filters_' . $this->filtered_post_type, true );
@@ -709,7 +708,7 @@ if ( ! class_exists( 'Tribe_Filters' ) ) {
 			echo "\n</script>";
 		}
 
-		protected function maybe_set_ordering( $wp_query ) {
+		protected function maybe_set_ordering( WP_Query $wp_query ) {
 			$sort_prefix = apply_filters( 'tribe_sort_prefix', 'tribe_sort_' );
 			$orderby     = $wp_query->get( 'orderby' );
 			if ( empty( $orderby ) && isset( $_POST['orderby'] ) ) {

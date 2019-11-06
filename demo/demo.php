@@ -123,11 +123,11 @@ class Tribe_Status_Type {
 		add_action( 'tribe_orderby_custom' . $type, array( $this, 'orderby' ), 10, 2 );
 	}
 
-	public function orderby( $wp_query, $filter ) {
+	public function orderby( WP_Query $wp_query, $filter ) {
 		add_filter( 'posts_orderby', array( $this, 'set_orderby' ), 10, 2 );
 	}
 
-	public function set_orderby( $orderby, $wp_query ) {
+	public function set_orderby( $orderby, WP_Query $wp_query ) {
 		// run once
 		remove_filter( 'posts_orderby', array( $this, 'set_orderby' ), 10, 2 );
 		global $wpdb;
@@ -136,7 +136,7 @@ class Tribe_Status_Type {
 		return $by . ' ' . $order;
 	}
 
-	public function parse_query( $wp_query, $active ) {
+	public function parse_query( WP_Query $wp_query, $active ) {
 		if ( ! isset( $active[ $this->key ] ) ) {
 			return;
 		}
